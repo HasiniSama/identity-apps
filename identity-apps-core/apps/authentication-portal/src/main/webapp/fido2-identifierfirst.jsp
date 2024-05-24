@@ -174,8 +174,9 @@
                         <div class="text-center mt-1">
                             <%
                                 String multiOptionURI = request.getParameter("multiOptionURI");
-                                if (multiOptionURI != null && AuthenticationEndpointUtil.isValidURL(multiOptionURI) &&
-                                    isMultiAuthAvailable(multiOptionURI)) {
+                                if (multiOptionURI != null &&
+                                        AuthenticationEndpointUtil.isValidMultiOptionURI(multiOptionURI) &&
+                                        isMultiAuthAvailable(multiOptionURI)) {
                             %>
                                 <a 
                                     class="ui primary basic button link-button" 
