@@ -69,16 +69,24 @@
             if (!line.trim().startsWith("#") && !line.trim().isEmpty()) {
                 // Split the line into key and value using '=' as the delimiter
                 String[] keyValue = line.split("=");
-                // Split the key further using '.' as the delimiter
-                String[] parts = keyValue[0].split("\\.");
-                // Split the code further using '_' as the delimiter
-                String[] languageCode = parts[parts.length - 1].split("_");
-                // Add the values
-                if (!supportedLanguages.containsKey(languageCode[0])) {
-                    supportedLanguages.put(languageCode[0], languageCode[1]);
-                }
-                if (!languageSupportedCountries.contains(languageCode[1])) {
-                    languageSupportedCountries.add(languageCode[1]);
+                if (keyValue.length == 2) {
+                    // Split the key further using '.' as the delimiter
+                    String[] parts = keyValue[0].split("\\.");
+                    // Ensure the key has at least one part
+                    if (parts.length > 0) {
+                        // Split the code further using '_' as the delimiter
+                        String[] languageCode = parts[parts.length - 1].split("_");
+                        // Ensure the languageCode has at least two parts (language and country)
+                        if (languageCode.length == 2) {
+                            // Add the values
+                            if (!supportedLanguages.containsKey(languageCode[0])) {
+                                supportedLanguages.put(languageCode[0], languageCode[1]);
+                            }
+                            if (!languageSupportedCountries.contains(languageCode[1])) {
+                                languageSupportedCountries.add(languageCode[1]);
+                            }
+                        }
+                    }
                 }
             }
         }
