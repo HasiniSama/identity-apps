@@ -43,7 +43,7 @@
                 String i18nKey = null;
         
                 if (StringUtils.equals(attribute, USERNAME_CLAIM_URI)) {
-                    i18nKey = "Username";
+                    i18nKey = "username";
                 } else if (StringUtils.equals(attribute, EMAIL_CLAIM_URI )) {
                     i18nKey = "email";
                 } else if (StringUtils.equals(attribute, MOBILE_CLAIM_URI)) {
@@ -60,7 +60,7 @@
             }
             if (attributeList.size() > 0) {
                 usernameLabel = String.join(", ", attributeList.subList(0, attributeList.size() - 1))
-                    + (attributeList.size() > 1 ? " or " : "")
+                    + (attributeList.size() > 1 ? " " + orString + " " : "")
                     + attributeList.get(attributeList.size() - 1);
             }
         return usernameLabel;
