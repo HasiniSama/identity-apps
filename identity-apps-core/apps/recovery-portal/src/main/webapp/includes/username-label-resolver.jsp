@@ -51,7 +51,7 @@
                 }
         
                 if (i18nKey != null) {
-                    String i18nValue = AuthenticationEndpointUtil.i18n(resourceBundle, i18nKey);
+                    String i18nValue = AuthenticationEndpointUtil.i18n(resourceBundle, i18nKey).toLowerCase();
                     if (index > 0) {
                         i18nValue = i18nValue.toLowerCase();
                     }
