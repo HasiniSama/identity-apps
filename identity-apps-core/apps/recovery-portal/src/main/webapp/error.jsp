@@ -44,6 +44,7 @@
     String errorMsg = IdentityManagementEndpointUtil.getStringValue(request.getAttribute("errorMsg"));
     String errorCode = IdentityManagementEndpointUtil.getStringValue(request.getAttribute("errorCode"));
     String invalidConfirmationErrorCode = IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_INVALID_CODE.getCode();
+    String expiredConfirmationErrorCode = IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_EXPIRED_CODE.getCode();
     String callback = request.getParameter("callback");
     boolean isValidCallback = true;
 
@@ -208,10 +209,11 @@
 
             var errorCodeFromParams = "<%=errorCode%>";
             var invalidConfirmationErrorCode = "<%=invalidConfirmationErrorCode%>";
+            var expiredConfirmationErrorCode = "<%=expiredConfirmationErrorCode%>";
 
-            // Check if the error is related to the confirmation code being invalid.
+            // Check if the error is related to the confirmation code being invalid or expired.
             // If so, navigate the users to the URL defined in `callback` URL param.
-            if (errorCodeFromParams === invalidConfirmationErrorCode) {
+            if (errorCodeFromParams === invalidConfirmationErrorCode || errorCodeFromParams === expiredConfirmationErrorCode) {
                 window.location.href = "<%=Encode.forHtmlAttribute(callback)%>";
 
                 return;
