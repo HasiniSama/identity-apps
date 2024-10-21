@@ -23,6 +23,9 @@
 <%-- Include tenant context --%>
 <jsp:directive.include file="init-url.jsp"/>
 
+<%-- Localization --%>
+<jsp:directive.include file="localize.jsp" />
+
 <%-- Branding Preferences --%>
 <jsp:directive.include file="branding-preferences.jsp"/>
 

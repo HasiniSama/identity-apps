@@ -230,7 +230,9 @@
     String productLogoAlt = "WSO2 Identity Server Logo";
     String productWhiteLogoURL = "libs/themes/wso2is/assets/images/branding/logo-white.svg";
     String productWhiteLogoAlt = "WSO2 Identity Server Logo White Variation";
-    String[] screenNames = {"common", "sign-up", "password-recovery", "password-reset", "password-reset-success"};
+
+    final String BRANDING_PREFERENCE_CACHE_KEY = "BrandingPreferenceCache";
+    final String BRANDING_TEXT_PREFERENCE_CACHE_KEY = "BrandingTextPreferenceCache";
 
     // Constants used to create full custom layout name
     String PREFIX_FOR_CUSTOM_LAYOUT_NAME = "custom";
@@ -411,8 +413,12 @@
         }
 
         BrandingPreferenceRetrievalClient brandingPreferenceRetrievalClient = new BrandingPreferenceRetrievalClient();
-        JSONObject brandingPreferenceResponse = brandingPreferenceRetrievalClient.getPreference(tenantRequestingPreferences,
+        JSONObject brandingPreferenceResponse = (JSONObject) request.getAttribute(BRANDING_PREFERENCE_CACHE_KEY);
+        if (brandingPreferenceResponse == null) {
+            brandingPreferenceResponse = brandingPreferenceRetrievalClient.getPreference(tenantRequestingPreferences,
                 preferenceResourceType, applicationRequestingPreferences, DEFAULT_RESOURCE_LOCALE);
+            request.setAttribute(BRANDING_PREFERENCE_CACHE_KEY, brandingPreferenceResponse);
+        }
 
         if (brandingPreferenceResponse.has(PREFERENCE_KEY)) {
             brandingPreference = brandingPreferenceResponse.getJSONObject(PREFERENCE_KEY);
@@ -437,13 +443,21 @@
             if (isBrandingEnabledInTenantPreferences) {
                 // Custom Text
                 for (String screenName : screenNames) {
-                    JSONObject customTextPreferenceResponse = brandingPreferenceRetrievalClient.getCustomTextPreference(
-                        tenantRequestingPreferences,
-                        preferenceResourceType,
-                        applicationRequestingPreferences,
-                        screenName,
-                        locale
-                    );
+                    StringBuilder textBrandingCacheKey = new StringBuilder(BRANDING_TEXT_PREFERENCE_CACHE_KEY);
+                    textBrandingCacheKey.append("-");
+                    textBrandingCacheKey.append(screenName);
+
+                    JSONObject customTextPreferenceResponse = (JSONObject) request.getAttribute(textBrandingCacheKey.toString());
+                    if (customTextPreferenceResponse == null) {
+                        customTextPreferenceResponse = brandingPreferenceRetrievalClient.getCustomTextPreference(
+                            tenantRequestingPreferences,
+                            preferenceResourceType,
+                            applicationRequestingPreferences,
+                            screenName,
+                            locale
+                        );
+                        request.setAttribute(textBrandingCacheKey.toString(), customTextPreferenceResponse);
+                    }
 
                     // Merge the preferences for the current screen into the customText object
                     if (customTextPreferenceResponse.has(PREFERENCE_KEY)) {
