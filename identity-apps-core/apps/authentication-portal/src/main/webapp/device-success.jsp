@@ -22,7 +22,7 @@
 <%@ page import="org.apache.commons.text.StringEscapeUtils" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="layout" uri="org.wso2.identity.apps.taglibs.layout.controller" %>
-<% @include file="includes/localize.jsp" %>
+<%@ include file="includes/localize.jsp" %>
 
 <%-- Include tenant context --%>
 <jsp:directive.include file="includes/init-url.jsp"/>
