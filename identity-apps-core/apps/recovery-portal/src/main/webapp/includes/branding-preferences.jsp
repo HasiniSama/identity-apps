@@ -413,7 +413,13 @@
         }
 
         BrandingPreferenceRetrievalClient brandingPreferenceRetrievalClient = new BrandingPreferenceRetrievalClient();
-        JSONObject brandingPreferenceResponse = (JSONObject) request.getAttribute(BRANDING_PREFERENCE_CACHE_KEY);
+        JSONObject brandingPreferenceResponse = null;
+        Object cachedBrandingPreferenceResponse = request.getAttribute(BRANDING_PREFERENCE_CACHE_KEY);
+        if (cachedBrandingPreferenceResponse != null && cachedBrandingPreferenceResponse instanceof BrandingPreferenceRetrievalClientException) {
+            throw (BrandingPreferenceRetrievalClientException) cachedBrandingPreferenceResponse;
+        } else {
+            brandingPreferenceResponse = (JSONObject) cachedBrandingPreferenceResponse;
+        }
         if (brandingPreferenceResponse == null) {
             brandingPreferenceResponse = brandingPreferenceRetrievalClient.getPreference(tenantRequestingPreferences,
                 preferenceResourceType, applicationRequestingPreferences, DEFAULT_RESOURCE_LOCALE);
@@ -648,6 +654,7 @@
     } catch (BrandingPreferenceRetrievalClientException e) {
         // Exception is ignored and the variable will use the fallbacks.
         // TODO: Move the duplicated logic to a common place.
+        request.setAttribute(BRANDING_PREFERENCE_CACHE_KEY, e);
     } finally {
 
         // Set fallbacks.
