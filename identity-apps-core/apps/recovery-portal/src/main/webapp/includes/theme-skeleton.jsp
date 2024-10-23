@@ -20,6 +20,9 @@
 <%@ page import="org.apache.commons.lang.StringUtils" %>
 <%@ page import="org.apache.commons.text.StringEscapeUtils" %>
 
+<%-- Localization --%>
+<jsp:directive.include file="localize.jsp" />
+
 <%-- Include tenant context --%>
 <jsp:directive.include file="../tenant-resolve.jsp"/>
 
