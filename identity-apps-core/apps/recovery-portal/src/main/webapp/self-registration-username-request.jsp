@@ -114,6 +114,7 @@
     String errorMsg = IdentityManagementEndpointUtil.getStringValue(request.getAttribute("errorMsg"));
     String consentPurposeGroupName = "SELF-SIGNUP";
     String consentPurposeGroupType = "SYSTEM";
+    boolean isEmailUsernameEnabled = MultitenantUtils.isEmailUserName();
 
     String[] missingClaimList = new String[0];
     String[] missingClaimDisplayName = new String[0];
@@ -733,7 +734,11 @@
                             <input id="isSaaSApp" name="isSaaSApp" type="hidden"value="<%=isSaaSApp%>">
                         <% if (isPasswordProvisionEnabled || !skipSignUpEnableCheck) { %>
                             <div class="ui divider hidden"></div>
+                            <% if (isEmailUsernameEnabled) { %>
+                            <label><%=IdentityManagementEndpointUtil.i18n(recoveryResourceBundle, "Username (Email)")%></label>
+                            <% } else {%>
                             <label><%=IdentityManagementEndpointUtil.i18n(recoveryResourceBundle, "Username")%></label>
+                            <% } %>
                             <div class="ui fluid left icon input">
                                 <input
                                     type="text"
@@ -741,12 +746,12 @@
                                     value=""
                                     name="usernameInput"
                                     tabindex="1"
-                                    placeholder="<%=IdentityManagementEndpointUtil.i18n(recoveryResourceBundle, "enter.your.username")%>"
+                                    placeholder="<%= IdentityManagementEndpointUtil.i18n(recoveryResourceBundle, isEmailUsernameEnabled? "enter.your.email" : "enter.your.username") %>"
                                     data-testid="self-register-page-username-input"
                                     autocomplete="off"
                                     required
                                 />
-                                <i aria-hidden="true" class="user outline icon"></i>
+                                <i aria-hidden="true" class="<%= isEmailUsernameEnabled ? "envelope outline icon" : "user outline icon" %>"></i>
                             </div>
                             <div class="mt-1" id="alphanumeric-username-error-msg" hidden="hidden">
                                 <div class="ui grid">
@@ -768,6 +773,10 @@
                         <input id="username" name="username" type="hidden"
                             <% if(skipSignUpEnableCheck) {%> value="<%=Encode.forHtmlAttribute(username)%>" <%}%>>
                         <% if (emailPII != null) { %>
+                        <% if (isEmailUsernameEnabled) { %>
+                            <input type="hidden" id="emailAddress" name="http://wso2.org/claims/emailaddress" value="">
+                        <% } %>
+                        <% if (!isEmailUsernameEnabled) { %>
                         <div id="usernameField"
                             <%if (isSelfRegistrationLockOnCreationEnabled || emailPII.getRequired() || !isAlphanumericUsernameEnabled) { %>
                                 class="field required"
@@ -800,6 +809,7 @@
                             </div>
                             <div class="ui divider hidden"></div>
                         </div>
+                        <% } %>
                         <% } %>
                         <div id="passwordField" class="field required">
                             <label><%=IdentityManagementEndpointUtil.i18n(recoveryResourceBundle, "Password")%></label>
@@ -1610,6 +1620,10 @@
                         var error_msg = $("#error-msg");
                         var server_error_msg = $("#server-error-msg");
 
+                        if(<%=isEmailUsernameEnabled%>) {
+                            document.getElementById('emailAddress').value = alphanumericUsernameUserInput.value;
+                        }
+
                         if (!<%=isUsernameValidationEnabled%>) {
                             if (showUsernameRegexValidationStatus()) {
                                 userName.value = alphanumericUsernameUserInput.value.trim();
@@ -1815,6 +1829,10 @@
                 %>
                 // Do the form submission if the inputs are valid.
                 if (validInput) {
+                    if (!<%=isEmailUsernameEnabled%>) {
+                        usernameUserInput = alphanumericUsernameUserInput;
+                        document.getElementById('emailAddress').value = alphanumericUsernameUserInput;
+                    }
                     $form.data("submitted", true);
                     document.getElementById("register").submit();
                 } else {
