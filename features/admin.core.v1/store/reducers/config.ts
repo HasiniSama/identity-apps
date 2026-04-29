@@ -90,6 +90,7 @@ export const commonConfigReducerInitialState: CommonConfigReducerStateInterface<
             accountRecovery: "",
             actions: "",
             adminAdvisoryBanner: "",
+            agentSharing: "",
             apiRoot: "",
             applicationTemplate: "",
             applicationTemplateMetadata: "",
